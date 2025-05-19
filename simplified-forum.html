@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>合工大校园论坛 - 简化版</title>
+    <title>合工大校园论坛</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -35,7 +35,7 @@
         .form-group {
             margin-bottom: 15px;
         }
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -109,7 +109,7 @@
 <body>
     <header>
         <h1>合工大校园论坛</h1>
-        <p>简化版 - 无需后端服务</p>
+        <p>在线版 - 数据存储在本地浏览器中</p>
     </header>
     
     <div class="status">
@@ -157,30 +157,23 @@
             {
                 id: 1,
                 title: "欢迎使用合工大校园论坛",
-                content: "这是一个简化版的校园论坛，使用浏览器本地存储保存数据。您可以发布新帖子，并查看已发布的帖子。",
+                content: "这是一个简单的校园论坛系统，使用浏览器本地存储保存数据。您可以发布新帖子，并查看已发布的帖子。\n\n特点：\n1. 完全在线运行\n2. 支持帖子分类\n3. 数据保存在本地浏览器中",
                 category: "all",
                 createdAt: new Date().toISOString()
             },
             {
                 id: 2,
                 title: "高等数学期末复习资料分享",
-                content: "整理了一份高数期末复习资料，包含历年真题和解析，有需要的同学请在评论区留言。",
+                content: "整理了一份高数期末复习资料，包含历年真题和解析，有需要的同学请在评论区留言。\n\n主要内容：\n1. 微积分重点公式\n2. 典型题目解析\n3. 历年真题汇总",
                 category: "study",
                 createdAt: new Date(Date.now() - 86400000).toISOString()
             },
             {
                 id: 3,
                 title: "校园美食推荐",
-                content: "推荐几家校园周边的美食：1. 老王家的兰州拉面 2. 小李的麻辣烫 3. 食堂二楼的黄焖鸡米饭",
+                content: "推荐几家校园周边的美食：\n\n1. 老王家的兰州拉面 - 性价比高，味道正宗\n2. 小李的麻辣烫 - 料足味美，推荐午餐\n3. 食堂二楼的黄焖鸡米饭 - 学生优惠，份量十足",
                 category: "life",
                 createdAt: new Date(Date.now() - 172800000).toISOString()
-            },
-            {
-                id: 4,
-                title: "出售二手笔记本电脑",
-                content: "出售一台二手ThinkPad笔记本，i5处理器，8G内存，256G固态硬盘，九成新，价格2000元，有意者请联系：123456789",
-                category: "trade",
-                createdAt: new Date(Date.now() - 259200000).toISOString()
             }
         ];
         
@@ -253,6 +246,7 @@
                     postTitle.appendChild(document.createTextNode(post.title));
                     
                     const postContent = document.createElement('p');
+                    postContent.style.whiteSpace = 'pre-wrap';
                     postContent.textContent = post.content;
                     
                     const postTime = document.createElement('small');
