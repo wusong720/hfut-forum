@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合工大校园论坛 - 简化版</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        header {
+            background-color: #1e88e5;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        main {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        .post-form, .posts-list {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        button {
+            background-color: #1e88e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #1565c0;
+        }
+        .post-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #1e88e5;
+        }
+        .post-card h3 {
+            margin-top: 0;
+            color: #1e88e5;
+        }
+        .post-card small {
+            color: #757575;
+            display: block;
+            margin-top: 10px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #1e88e5;
+            color: white;
+        }
+        .status {
+            text-align: center;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            color: #2e7d32;
+        }
+        @media (max-width: 768px) {
+            main {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>合工大校园论坛</h1>
+        <p>简化版 - 无需后端服务</p>
+    </header>
+    
+    <div class="status">
+        系统状态：正常运行中（本地存储模式）
+    </div>
+    
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('all')">全部帖子</div>
+        <div class="tab" onclick="switchTab('study')">学习交流</div>
+        <div class="tab" onclick="switchTab('life')">校园生活</div>
+        <div class="tab" onclick="switchTab('trade')">二手交易</div>
+    </div>
+    
+    <main>
+        <section class="post-form">
+            <h2>发布新帖子</h2>
+            <form id="postForm">
+                <div class="form-group">
+                    <input type="text" id="title" placeholder="帖子标题" required>
+                </div>
+                <div class="form-group">
+                    <select id="category" required>
+                        <option value="">-- 选择分类 --</option>
+                        <option value="study">学习交流</option>
+                        <option value="life">校园生活</option>
+                        <option value="trade">二手交易</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <textarea id="content" placeholder="帖子内容" required></textarea>
+                </div>
+                <button type="submit">发布</button>
+            </form>
+        </section>
+
+        <section class="posts-list">
+            <h2>最新帖子</h2>
+            <div id="postsList"></div>
+        </section>
+    </main>
+
+    <script>
+        // 初始化帖子数据
+        let posts = JSON.parse(localStorage.getItem('forumPosts')) || [
+            {
+                id: 1,
+                title: "欢迎使用合工大校园论坛",
+                content: "这是一个简化版的校园论坛，使用浏览器本地存储保存数据。您可以发布新帖子，并查看已发布的帖子。",
+                category: "all",
+                createdAt: new Date().toISOString()
+            },
+            {
+                id: 2,
+                title: "高等数学期末复习资料分享",
+                content: "整理了一份高数期末复习资料，包含历年真题和解析，有需要的同学请在评论区留言。",
+                category: "study",
+                createdAt: new Date(Date.now() - 86400000).toISOString()
+            },
+            {
+                id: 3,
+                title: "校园美食推荐",
+                content: "推荐几家校园周边的美食：1. 老王家的兰州拉面 2. 小李的麻辣烫 3. 食堂二楼的黄焖鸡米饭",
+                category: "life",
+                createdAt: new Date(Date.now() - 172800000).toISOString()
+            },
+            {
+                id: 4,
+                title: "出售二手笔记本电脑",
+                content: "出售一台二手ThinkPad笔记本，i5处理器，8G内存，256G固态硬盘，九成新，价格2000元，有意者请联系：123456789",
+                category: "trade",
+                createdAt: new Date(Date.now() - 259200000).toISOString()
+            }
+        ];
+        
+        // 保存到本地存储
+        function savePosts() {
+            localStorage.setItem('forumPosts', JSON.stringify(posts));
+        }
+        
+        // 当前选中的分类
+        let currentCategory = 'all';
+        
+        // 切换分类标签
+        function switchTab(category) {
+            currentCategory = category;
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            renderPosts();
+        }
+        
+        // 渲染帖子列表
+        function renderPosts() {
+            const postsList = document.getElementById('postsList');
+            postsList.innerHTML = '';
+            
+            const filteredPosts = currentCategory === 'all' 
+                ? posts 
+                : posts.filter(post => post.category === currentCategory);
+            
+            if (filteredPosts.length === 0) {
+                postsList.innerHTML = '<p>暂无帖子</p>';
+                return;
+            }
+            
+            filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .forEach(post => {
+                    const postCard = document.createElement('div');
+                    postCard.className = 'post-card';
+                    
+                    const categoryBadge = document.createElement('span');
+                    categoryBadge.style.fontSize = '12px';
+                    categoryBadge.style.backgroundColor = '#e0e0e0';
+                    categoryBadge.style.padding = '2px 6px';
+                    categoryBadge.style.borderRadius = '4px';
+                    categoryBadge.style.marginRight = '10px';
+                    
+                    switch(post.category) {
+                        case 'study':
+                            categoryBadge.textContent = '学习交流';
+                            categoryBadge.style.backgroundColor = '#e3f2fd';
+                            categoryBadge.style.color = '#1565c0';
+                            break;
+                        case 'life':
+                            categoryBadge.textContent = '校园生活';
+                            categoryBadge.style.backgroundColor = '#e8f5e9';
+                            categoryBadge.style.color = '#2e7d32';
+                            break;
+                        case 'trade':
+                            categoryBadge.textContent = '二手交易';
+                            categoryBadge.style.backgroundColor = '#fff3e0';
+                            categoryBadge.style.color = '#e65100';
+                            break;
+                        default:
+                            categoryBadge.textContent = '其他';
+                    }
+                    
+                    const postTitle = document.createElement('h3');
+                    postTitle.appendChild(categoryBadge);
+                    postTitle.appendChild(document.createTextNode(post.title));
+                    
+                    const postContent = document.createElement('p');
+                    postContent.textContent = post.content;
+                    
+                    const postTime = document.createElement('small');
+                    postTime.textContent = '发布时间：' + new Date(post.createdAt).toLocaleString();
+                    
+                    postCard.appendChild(postTitle);
+                    postCard.appendChild(postContent);
+                    postCard.appendChild(postTime);
+                    
+                    postsList.appendChild(postCard);
+                });
+        }
+        
+        // 处理表单提交
+        document.getElementById('postForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const category = document.getElementById('category').value;
+            
+            if (!title || !content || !category) {
+                alert('请填写完整信息');
+                return;
+            }
+            
+            // 创建新帖子
+            const newPost = {
+                id: posts.length > 0 ? Math.max(...posts.map(p => p.id)) + 1 : 1,
+                title,
+                content,
+                category,
+                createdAt: new Date().toISOString()
+            };
+            
+            // 添加到帖子列表
+            posts.unshift(newPost);
+            savePosts();
+            
+            // 清空表单
+            document.getElementById('title').value = '';
+            document.getElementById('content').value = '';
+            document.getElementById('category').value = '';
+            
+            // 重新渲染帖子列表
+            renderPosts();
+            
+            alert('帖子发布成功！');
+        });
+        
+        // 初始渲染
+        renderPosts();
+    </script>
+</body>
+</html>
