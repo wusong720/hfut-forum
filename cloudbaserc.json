@@ -1,6 +1,14 @@
 {
-  "envVariables": {
-    "REACT_APP_LC_APPID": "h1UH8Wm68F5XQu1qhRMtOU2w-MdYXbMMI",
-    "REACT_APP_LC_APPKEY": "XFDfm5ZkjsxSTKqjmZi1nvtH"
+  "envId": "zhfut-forum-6gt7kblhf98fa587"
+  "framework": {
+    "plugins": {
+      "client": {
+        "use": "@cloudbase/framework-plugin-website",
+        "inputs": {
+          "buildCommand": "npm run build",
+          "outputPath": "dist"
+        }
+      }
+    }
   }
 }
