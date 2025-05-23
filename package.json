@@ -1,15 +1,11 @@
 {
   "name": "hfut-forum",
   "version": "1.0.0",
-  "description": "工大论坛静态网站",
   "scripts": {
-    "build": "mkdir -p dist && cp simplified-forum.html dist/index.html && cp -r assets dist/",
+    "build": "mkdir -p dist && cp simplified-forum.html dist/index.html && [ -d assets ] && cp -r assets dist/ || true",
     "start": "echo \"请使用静态服务器打开dist/index.html\"",
     "deploy": "npm run build && tcb framework deploy"
   },
-  "keywords": ["forum", "static-site"],
-  "author": "Your Name",
-  "license": "MIT",
   "dependencies": {},
   "devDependencies": {}
 }
