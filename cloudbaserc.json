@@ -1,6 +1,7 @@
 {
   "envId": "zhfut-forum-6gt7kblhf98fa587",
   "framework": {
+    "name": "hfut-forum",  
     "plugins": {
       "client": {
         "use": "@cloudbase/framework-plugin-website",
